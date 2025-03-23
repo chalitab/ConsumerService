@@ -1,7 +1,19 @@
+using Amazon;
+using Amazon.SQS;
+using ConsumerService.Services;
+using Microsoft.Extensions.Hosting;
 using ConsumerService;
 
-var builder = Host.CreateApplicationBuilder(args);
-builder.Services.AddHostedService<Worker>();
+var host = Host.CreateDefaultBuilder(args)
+    .ConfigureServices((context, services) =>
+    {
+        services.AddSingleton<IAmazonSQS>(sp =>
+        {
+            return new AmazonSQSClient(RegionEndpoint.APSoutheast1);
+        });
 
-var host = builder.Build();
-host.Run();
+        services.AddHostedService<SqsConsumerService>();
+    })
+    .Build();
+
+await host.RunAsync();
