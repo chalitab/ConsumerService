@@ -12,6 +12,7 @@ var host = Host.CreateDefaultBuilder(args)
             return new AmazonSQSClient(RegionEndpoint.APSoutheast1);
         });
 
+        services.AddHttpClient();
         services.AddHostedService<SqsConsumerService>();
     })
     .Build();
